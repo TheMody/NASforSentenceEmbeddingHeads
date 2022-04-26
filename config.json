@@ -1,0 +1,7 @@
+[DEFAULT]
+lr = 1e-4
+batch_size = 128
+checkpoint = None
+directory = default
+seed = 42
+epochs = 10
