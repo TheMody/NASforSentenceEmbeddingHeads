@@ -64,7 +64,7 @@ def train(args, config):
                 )
         def run_opaque_box(args, reporter):
             print(args)
-            model = NLP_embedder(num_classes = 2,batch_size = 32,args =  args)
+            model = NLP_embedder(num_classes = 2,batch_size = 128,args =  args)
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
             model = model.to(device)
             
