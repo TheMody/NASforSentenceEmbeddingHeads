@@ -2,6 +2,7 @@ from transformers import BertTokenizer, BertModel, ElectraTokenizer, ElectraMode
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
 import math
 import time
 import numpy as np
@@ -13,145 +14,201 @@ logging.set_verbosity_error()
 models = ['bert-base-uncased',
          'google/electra-small-discriminator',
          'distilbert-base-uncased',
-         'gpt2',
-         'bag_of_words'
+         'gpt2'
           ]
 
-class Bag_of_words(nn.Module):
-    def __init__(self, pad_token):
-        super(Bag_of_words, self).__init__()
-        self.length = 30522
-        self.pad_token = pad_token
-        return
+class CosineWarmupScheduler(optim.lr_scheduler._LRScheduler):
 
-    def __call__(self, input_ids, **kwargs):
-        output = []
-        for sentence in input_ids:
-            bag = [0]*self.length
-            for token in sentence:
-                # done when first padding token occurs
-                if token == self.pad_token:
-                    break
-                bag[token] += 1
-            output.append(bag)
-        output = torch.FloatTensor(output)
-        return output
+    def __init__(self, optimizer, warmup, max_iters):
+        self.warmup = warmup
+        self.max_num_iters = max_iters
+        super().__init__(optimizer)
+
+    def get_lr(self):
+        lr_factor = self.get_lr_factor(epoch=self.last_epoch)
+        return [base_lr * lr_factor for base_lr in self.base_lrs]
+
+    def get_lr_factor(self, epoch):
+        lr_factor = 0.5 * (1 + np.cos(np.pi * epoch / self.max_num_iters))
+        if epoch <= self.warmup:
+            lr_factor *= epoch * 1.0 / self.warmup
+        return lr_factor
+    
+class EncoderBlock(nn.Module):
+
+    def __init__(self, input_dim, num_heads, dim_feedforward, dropout=0.0):
+        """
+        Inputs:
+            input_dim - Dimensionality of the input
+            num_heads - Number of heads to use in the attention block
+            dim_feedforward - Dimensionality of the hidden layer in the MLP
+            dropout - Dropout probability to use in the dropout layers
+        """
+        super().__init__()
+
+        # Attention layer
+        self.self_attn =  nn.MultiheadAttention(input_dim, num_heads)
+
+        # Two-layer MLP
+        self.linear_net = nn.Sequential(
+            nn.Linear(input_dim, dim_feedforward),
+            nn.Dropout(dropout),
+            nn.ReLU(inplace=True),
+            nn.Linear(dim_feedforward, input_dim)
+        )
+
+        # Layers to apply in between the main layers
+        self.norm1 = nn.LayerNorm(input_dim)
+        self.norm2 = nn.LayerNorm(input_dim)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x, mask=None):
+        # Attention part
+        attn_out,_ = self.self_attn(x,x,x, key_padding_mask=mask)
+        x = x + self.dropout(attn_out)
+        x = self.norm1(x)
+
+        # MLP part
+        linear_out = self.linear_net(x)
+        x = x + self.dropout(linear_out)
+        x = self.norm2(x)
+
+        return x
 
 
 class NLP_embedder(nn.Module):
 
-    def __init__(self, hyperparameters, num_classes, batch_size):
+#             hidden_fc=ag.space.Int(lower=5, upper=200),
+#              number_layers = ag.space.Int(lower = 1, upper = 10),
+#              lr=ag.space.Real(lower=5e-7, upper=1e-4, log=True),
+#              CNNs = ag.space.Categorical(ag.space.Dict(hidden_fc=ag.space.Int(lower=5, upper=200),
+#                                                        number_layers = ag.space.Int(lower = 1, upper = 5),
+#                                                        kernel_size = ag.space.Int(lower = 3, upper = 11)
+#                                                     #   pooling = ag.space.Categorical("max", "mean", "first")
+#                  ),ag.space.Dict()
+#              
+#              ),
+#              pooling = ag.space.Categorical("max", "mean", "[CLS]"),
+#              layer_norm = ag.space.Categorical("layer_norm", "Batch_norm", "none"),
+#              freeze_base = ag.space.Categorical(True,False),
+#              Attention = ag.space.Categorical(ag.space.Dict(embed_dim=ag.space.Categorical(8,16,32,64,128,256,512),
+#                                                             num_heads=ag.space.Categorical(1,2,4,8),
+#                                                        number_layers = ag.space.Int(lower = 1, upper = 5)
+#                  ),ag.space.Dict())
+#             )
+
+    def __init__(self,  num_classes, batch_size, args):
         super(NLP_embedder, self).__init__()
         self.type = 'nn'
         self.batch_size = batch_size
-        self.hyperparameters = hyperparameters
         self.padding = True
         self.bag = False
+        self.num_classes = num_classes
         self.lasthiddenstate = 0
-        if hyperparameters["model_name"] == models[0]:
-            from transformers import BertTokenizer, BertModel
-            self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-            self.model = BertModel.from_pretrained('bert-base-uncased')
-            output_length = 768
-        elif hyperparameters["model_name"] == models[1]:
-            from transformers import ElectraTokenizer, ElectraModel
-            self.tokenizer = ElectraTokenizer.from_pretrained('google/electra-small-discriminator')
-            self.model = ElectraModel.from_pretrained('google/electra-small-discriminator')
-            output_length = 256
-        elif hyperparameters["model_name"] == models[2]:
-            from transformers import DistilBertTokenizer, DistilBertModel
-            self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-            self.model = DistilBertModel.from_pretrained('distilbert-base-uncased')
-            self.lasthiddenstate = -1 
-            output_length = 768
-        elif hyperparameters["model_name"] == models[3]:
-            from transformers import GPT2Tokenizer, GPT2Model
-            self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-            self.model = GPT2Model.from_pretrained('gpt2')
-            self.padding = False
-            self.lasthiddenstate = -1  # needed because gpt2 always outputs the same token in the beginning
-            self.batch_size = 1  # has to be 1 since gpt-2 does not have padding tokens
-            output_length = 768
-        elif hyperparameters["model_name"] == models[4]:
-            from transformers import BertTokenizer
-            self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-            self.model = Bag_of_words(0)
-            self.bag = True
-            output_length = 30522
+        self.args = args
+      #  if hyperparameters["model_name"] == models[0]:
+        from transformers import BertTokenizer, BertModel
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.model = BertModel.from_pretrained('bert-base-uncased')
+        self.output_length = 768
+#         elif hyperparameters["model_name"] == models[1]:
+#             from transformers import ElectraTokenizer, ElectraModel
+#             self.tokenizer = ElectraTokenizer.from_pretrained('google/electra-small-discriminator')
+#             self.model = ElectraModel.from_pretrained('google/electra-small-discriminator')
+#             output_length = 256
+#         elif hyperparameters["model_name"] == models[2]:
+#             from transformers import DistilBertTokenizer, DistilBertModel
+#             self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+#             self.model = DistilBertModel.from_pretrained('distilbert-base-uncased')
+#             self.lasthiddenstate = -1 
+#             output_length = 768
+#         elif hyperparameters["model_name"] == models[3]:
+#             from transformers import GPT2Tokenizer, GPT2Model
+#             self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+#             self.model = GPT2Model.from_pretrained('gpt2')
+#             self.padding = False
+#             self.lasthiddenstate = -1  # needed because gpt2 always outputs the same token in the beginning
+#             self.batch_size = 1  # has to be 1 since gpt-2 does not have padding tokens
+#             output_length = 768
             
-
-        else:
-            print("model not supported", hyperparameters["model_name"])
-        self.fc1 = nn.Linear(output_length, hyperparameters["hidden_fc"])
-        self.fc2 = nn.Linear(hyperparameters["hidden_fc"], num_classes)
+        if args.freeze_base:
+            for param in self.model.parameters():
+                param.requires_grad = False
+        self.construct_head(args)
         self.criterion = torch.nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=hyperparameters["lr"])  # higher lrs than 1e-5 result in no change in loss
+        self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
         self.softmax = torch.nn.Softmax(dim=1)
         
-#         test = self.tokenizer(["hallo ","sadsa das ist wahnsinn"], return_tensors="pt", padding=True)
-#         print(self(test))
-#         print(self.embed(test))
+
+    def construct_head(self,args):
+        
+        #attention
+        if len(args.Attention.keys()) > 0:
+           self.atts = nn.ModuleList([EncoderBlock(input_dim = self.output_length, num_heads = args.Attention["num_heads"], 
+                        dim_feedforward  = self.output_length, dropout=0.2) for i in range(args.number_layers)])
+                                       
+        
+        ffc_input_size = self.output_length
+        #cnns
+        if len(args.CNNs.keys()) > 0:
+            self.ccn1 = nn.Conv1d(self.output_length, args.CNNs["hidden_fc"], args.CNNs["kernel_size"], padding = int(args.CNNs["kernel_size"]/2))
+            self.ccns = nn.ModuleList([nn.Conv1d(args.CNNs["hidden_fc"], args.CNNs["hidden_fc"], args.CNNs["kernel_size"], padding = int(args.CNNs["kernel_size"]/2))
+                                            for i in range(args.number_layers-1)])
+            ffc_input_size = args.CNNs["hidden_fc"]
+            
+        #fully connected layers
+        if args.number_layers >= 2:
+            self.fc1 = nn.Linear(ffc_input_size,args.hidden_fc)
+            self.fc2 = nn.Linear(args.hidden_fc, self.num_classes)
+            self.fcs = nn.ModuleList([nn.Linear(args.hidden_fc, args.hidden_fc) for i in range(args.number_layers-2)])
+        else:
+            self.fc1 = nn.Linear(ffc_input_size,self.num_classes)
+        
         
     def forward(self, x):
-        x = self.model(**x)
-        #x = torch.mean(x.last_hidden_state, dim = 1)
-        if self.bag:
-            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            x = x.to(device)
-        else:
-            x = x.last_hidden_state[:, self.lasthiddenstate]
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.softmax(x)
-        return x
-    
-    def embed(self, x):
-    
-        resultx = None
-
-        if self.bag:
-            tokens = self.tokenizer(x, return_tensors="pt", padding=True)
-            resultx = self.model(**tokens)
-            resultx = resultx.detach()
-            return resultx
-
-        for i in range(math.ceil(len(x) / self.batch_size)):
-            ul = min((i+1) * self.batch_size, len(x))
-            batch_x = x[i*self.batch_size: ul]
-            batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding)
-            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            batch_x = batch_x.to(device)
-
-            batch_x = self.model(**batch_x)
-#             number_notzeros = 0
-#             for encoding in batch_x:
-#                 for number in encoding:
-#                     if not number == 0:
-#                         number_notzeros += 1
-#             print(number_notzeros)
-            if not self.bag:
-                batch_x = batch_x.last_hidden_state[:, self.lasthiddenstate]
-
-            if resultx is None:
-                resultx = batch_x.detach()
-            else:
-                resultx = torch.cat((resultx, batch_x.detach()))
+        x = self.model(**x)   
         
-        return resultx
-     
-    def classify(self, x):
-        if self.bag:  # in this case the model is not yet on gpu
-            # keep in mind: bag-of-words embeddings might be too large to fit on the gpu all at once
-            # -> batch-wise classification might be necessary
-            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            x = x.to(device)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
+        x = x.last_hidden_state
+        
+        #Attention
+        for att in self.atts:
+            x = att(x)
+        
+        #CNNs
+        if len(self.args.CNNs.keys()) > 0:
+            x = torch.transpose(x,1,2)
+            x =  self.ccn1(x) 
+            for ccn in self.ccns:
+                x =  ccn(x) 
+            x = torch.transpose(x,1,2)
+        
+        #pooling
+        if self.args.pooling == "[CLS]":
+            x = x[:, self.lasthiddenstate]
+        if self.args.pooling == "max":
+            x,_ = torch.max(x, 1)
+        if self.args.pooling == "mean":
+            x = torch.mean(x,1)
+        
+        
+        
+        #fully connected layers
+        if self.args.number_layers >= 2:
+            x = F.relu(self.fc1(x))
+            for fc in self.fcs:
+                x =  F.relu(fc(x))
+            x = F.relu(self.fc2(x))
+        else:
+            x = self.fc1(x)
         x = self.softmax(x)
         return x
+    
+    
      
     def fit(self, x, y, epochs=1):
-
+        self.scheduler = CosineWarmupScheduler(optimizer= self.optimizer, 
+                                               warmup = math.ceil(len(x)*epochs *0.1 / self.batch_size) ,
+                                                max_iters = math.ceil(len(x)*epochs  / self.batch_size))
         for e in range(epochs):
             for i in range(math.ceil(len(x) / self.batch_size)):
               #  batch_x, batch_y = next(iter(data))
@@ -162,40 +219,25 @@ class NLP_embedder(nn.Module):
                 batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding)
                 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
                 batch_y = batch_y.to(device)
-                if not self.bag:
-                    batch_x = batch_x.to(device)
+                batch_x = batch_x.to(device)
+                self.optimizer.zero_grad()
                 y_pred = self(batch_x)
                 loss = self.criterion(y_pred, batch_y)
-                
-                self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-                # if i % 100 == 0:
-                #     # check available memory
-                #     print("batch", i)
-                #     nvidia_smi.nvmlInit()
-                #     handle = nvidia_smi.nvmlDeviceGetHandleByIndex(0)
-                #     info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
-                #     #            print("Total memory:", info.total)
-                #     print("Free memory:", info.free)
-                #     #            print("Used memory:", info.used)
-                #     nvidia_smi.nvmlShutdown()
 
-
-                #print(len(x))
-#                 if i % np.max((1,int((len(x)/self.batch_size)*0.01))) == 0:
-#                     print(i, loss.item())
+                if i % np.max((1,int((len(x)/self.batch_size)*0.01))) == 0:
+                    print(i, loss.item())
                 # print(y_pred, batch_y)
 
-                if not self.bag:
-                    # remove data from gpu
-                    batch_x = batch_x.to('cpu')
-                    batch_y = batch_y.to('cpu')
-                    y_pred = y_pred.to('cpu')
-                    del batch_x
-                    del batch_y
-                    del y_pred
-
+#                 # remove data from gpu mayne unneccesssary
+#                 batch_x = batch_x.to('cpu')
+#                 batch_y = batch_y.to('cpu')
+#                 y_pred = y_pred.to('cpu')
+#                 del batch_x
+#                 del batch_y
+#                 del y_pred
+                self.scheduler.step()
         torch.cuda.empty_cache()
 
         return 
@@ -225,32 +267,7 @@ class NLP_embedder(nn.Module):
         return resultx
     
     
-class hybrid_classifier():
-    
-    def __init__(self, hyperparameters, num_classes, batch_size):
-        from sklearn import svm
-        self.type = 'svm'
-        self.embedder = NLP_embedder(hyperparameters, num_classes, batch_size)
-        self.classifier = svm.SVC()
-        
-    def to(self, device):
-        self.embedder = self.embedder.to(device)
-        return self
-        
-    def fit(self, x, y, epochs=1):
-        embedded_X = self.embedder.embed(x).to("cpu")
-        self.classifier.fit(embedded_X, y)
-        
-    def predict(self, x):
-        embedded_X = self.embedder.embed(x).to("cpu")
-        return self.classifier.predict(embedded_X)
-    
-    def embed(self, x):
-        return self.embedder.embed(x)
-    
-    def classify(self, x):
-        x = x.to("cpu")
-        return self.classifier.predict(x)
+
         
         
 
