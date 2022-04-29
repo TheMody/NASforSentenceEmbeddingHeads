@@ -13,7 +13,6 @@ from sklearn.model_selection import train_test_split
 import torch
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import accuracy_score
 import time
 from data import load_data, SimpleDataset
 from torch.utils.data import DataLoader
@@ -33,14 +32,7 @@ def train(args, config):
 
     max_epochs = 10
 
-    def evaluate(classifier, X,Y):
-        y_pred = classifier.predict(X)
-        if not (type(y_pred) == np.ndarray):
-           y_pred = np.argmax(y_pred.to("cpu"), axis=1)
-        accuracy = accuracy_score(Y, y_pred)
-        evaluation_dict = {}
-        evaluation_dict["accuracy"] = accuracy
-        return evaluation_dict
+    
     
     def train_fn():
         @ag.args(
@@ -49,7 +41,8 @@ def train(args, config):
                  lr=ag.space.Real(lower=5e-7, upper=1e-4, log=True),
                  CNNs = ag.space.Categorical(ag.space.Dict(hidden_fc=ag.space.Int(lower=5, upper=200),
                                                            number_layers = ag.space.Int(lower = 1, upper = 5),
-                                                           kernel_size = ag.space.Int(lower = 3, upper = 11)
+                                                           kernel_size = ag.space.Int(lower = 3, upper = 11),
+                                                           skip = ag.space.Categorical(True,False)
                                                         #   pooling = ag.space.Categorical("max", "mean", "first")
                      ),ag.space.Dict()
                  
@@ -70,12 +63,8 @@ def train(args, config):
             
             X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name="sst2")
             
-            for e in range(max_epochs):
-                model.fit(X_train, Y_train, epochs=1)
+            model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val, reporter = reporter)
             
-                evaluation_dict = evaluate(model, X_val, Y_val)
-                 
-                reporter(objective=evaluation_dict[ACTIVE_METRIC_NAME], epoch=e)
             
         return run_opaque_box
 
@@ -98,7 +87,7 @@ def train(args, config):
         resource={'num_cpus': 4, 'num_gpus': 1},
         searcher='bayesopt',
         search_options=search_options,
-        num_trials=50,
+        num_trials=1,
         reward_attr=REWARD_ATTR_NAME,
         time_attr='epoch',
         grace_period=1,
@@ -109,23 +98,44 @@ def train(args, config):
         # constraint_attr=CONSTRAINT_METRIC_NAME
     )
 
-    # Run HPO experiment
+#     init_config ={'hidden_fc': 100,
+#                    'number_layers': 1,
+#                     'lr': 2e-05,
+#                      'CNNs': {},
+#                       'pooling': 'mean', 
+#                       'freeze_base': False,
+#                        'Attention': {}, 
+#                        'task_id': 1, 'config_id': '1'}
+
+    init_config = {'Attention▁0▁num_heads▁choice': 0, 
+                   'Attention▁0▁number_layers': 3, 
+                   'Attention▁choice': 1,
+                    'CNNs▁0▁hidden_fc': 102, 
+                    'CNNs▁0▁kernel_size': 7, 
+                    'CNNs▁0▁number_layers': 3, 
+                    'CNNs▁0▁skip▁choice': 0, 
+                    'CNNs▁choice': 1, 
+                    'freeze_base▁choice': 1, 
+                    'hidden_fc': 102,
+                     'lr': 2e-5, 
+                     'number_layers': 1, 
+                     'pooling▁choice': 2}
+    myscheduler.run_with_config(init_config)
+    
+  #  Run HPO experiment
     print("run scheduler")
     myscheduler.run()
     myscheduler.join_jobs()
-    
+     
     print("best config", myscheduler.get_best_config())
     print("best reward", myscheduler.get_best_reward())
     print("best task id", myscheduler.get_best_task_id())
-    
-    
+     
+     
     myscheduler.get_training_curves(filename=config["DEFAULT"]["directory"]+"/training_curves.png")
     
     
-    
-    
-    search_metric == "custom"
-    myscheduler.run_with_config(myscheduler.get_best_config())
+   # myscheduler.run_with_config(myscheduler.get_best_config())
     
 
 

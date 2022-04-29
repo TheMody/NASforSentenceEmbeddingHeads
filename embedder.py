@@ -171,15 +171,20 @@ class NLP_embedder(nn.Module):
         x = x.last_hidden_state
         
         #Attention
-        for att in self.atts:
-            x = att(x)
+        if len(self.args.Attention.keys()) > 0:
+            for att in self.atts:
+                x = att(x)
         
         #CNNs
         if len(self.args.CNNs.keys()) > 0:
             x = torch.transpose(x,1,2)
-            x =  self.ccn1(x) 
+            x = F.relu(self.ccn1(x))
+            if self.args.CNNs["skip"]:
+                x_in = x
             for ccn in self.ccns:
-                x =  ccn(x) 
+                x =  F.relu(ccn(x))
+            if self.args.CNNs["skip"]:
+                x = x_in + x
             x = torch.transpose(x,1,2)
         
         #pooling
@@ -205,7 +210,7 @@ class NLP_embedder(nn.Module):
     
     
      
-    def fit(self, x, y, epochs=1):
+    def fit(self, x, y, epochs=1, X_val= None,Y_val= None, reporter = None):
         self.scheduler = CosineWarmupScheduler(optimizer= self.optimizer, 
                                                warmup = math.ceil(len(x)*epochs *0.1 / self.batch_size) ,
                                                 max_iters = math.ceil(len(x)*epochs  / self.batch_size))
@@ -226,21 +231,29 @@ class NLP_embedder(nn.Module):
                 loss.backward()
                 self.optimizer.step()
 
-                if i % np.max((1,int((len(x)/self.batch_size)*0.01))) == 0:
-                    print(i, loss.item())
-                # print(y_pred, batch_y)
+#                 if i % np.max((1,int((len(x)/self.batch_size)*0.01))) == 0:
+#                     print(i, loss.item())
+               # print(y_pred, batch_y)
 
-#                 # remove data from gpu mayne unneccesssary
-#                 batch_x = batch_x.to('cpu')
-#                 batch_y = batch_y.to('cpu')
-#                 y_pred = y_pred.to('cpu')
-#                 del batch_x
-#                 del batch_y
-#                 del y_pred
                 self.scheduler.step()
-        torch.cuda.empty_cache()
+
+            if X_val != None:
+                with torch.no_grad():
+                    accuracy = self.evaluate(X_val, Y_val)
+                    print("accuracy after", e, "epochs:", float(accuracy.cpu().numpy()))
+                    reporter(objective=float(accuracy.cpu().numpy()), epoch=e)
+                
+            torch.cuda.empty_cache()
 
         return 
+    
+    def evaluate(self, X,Y):
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        Y = Y.to(device)
+        y_pred = self.predict(X)
+        accuracy = torch.sum(Y == y_pred)
+        accuracy = accuracy/Y.shape[0]
+        return accuracy
     
     def predict(self, x):
         resultx = None
@@ -250,21 +263,15 @@ class NLP_embedder(nn.Module):
             batch_x = x[i*self.batch_size: ul]
             batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding)
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            if not self.bag:
-                batch_x = batch_x.to(device)
+            batch_x = batch_x.to(device)
             batch_x = self(batch_x)
             if resultx is None:
                 resultx = batch_x.detach()
             else:
                 resultx = torch.cat((resultx, batch_x.detach()))
 
-            if device == 'cuda':
-                batch_x = batch_x.to('cpu')
-                del batch_x
-
-        if device == 'cuda':
-            resultx = resultx.to('cpu')
-        return resultx
+     #   resultx = resultx.detach()
+        return torch.argmax(resultx, dim = 1)
     
     
 
