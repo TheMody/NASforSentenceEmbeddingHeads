@@ -111,6 +111,11 @@ class NLP_embedder(nn.Module):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.model = BertModel.from_pretrained('bert-base-uncased')
         self.output_length = 768
+        
+#         from transformers import RobertaTokenizer, RobertaModel
+#         self.tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+#         self.model = RobertaModel.from_pretrained('roberta-base')
+#         self.output_length = 768
 #         elif hyperparameters["model_name"] == models[1]:
 #             from transformers import ElectraTokenizer, ElectraModel
 #             self.tokenizer = ElectraTokenizer.from_pretrained('google/electra-small-discriminator')
@@ -215,6 +220,7 @@ class NLP_embedder(nn.Module):
                                                warmup = math.ceil(len(x)*epochs *0.1 / self.batch_size) ,
                                                 max_iters = math.ceil(len(x)*epochs  / self.batch_size))
         for e in range(epochs):
+            start = time.time()
             for i in range(math.ceil(len(x) / self.batch_size)):
               #  batch_x, batch_y = next(iter(data))
                 ul = min((i+1) * self.batch_size, len(x))
@@ -240,8 +246,8 @@ class NLP_embedder(nn.Module):
             if X_val != None:
                 with torch.no_grad():
                     accuracy = self.evaluate(X_val, Y_val)
-                    print("accuracy after", e, "epochs:", float(accuracy.cpu().numpy()))
-                    reporter(objective=float(accuracy.cpu().numpy()), epoch=e)
+                    print("accuracy after", e, "epochs:", float(accuracy.cpu().numpy()), "time per epoch", time.time()-start)
+                    reporter(objective=float(accuracy.cpu().numpy()), epoch=e+1)
                 
             torch.cuda.empty_cache()
 

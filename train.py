@@ -30,18 +30,18 @@ def train(args, config):
 
     torch.multiprocessing.set_start_method('spawn', force=True)
 
-    max_epochs = 10
+    max_epochs = 5
 
     
     
     def train_fn():
         @ag.args(
                  hidden_fc=ag.space.Int(lower=5, upper=200),
-                 number_layers = ag.space.Int(lower = 1, upper = 10),
-                 lr=ag.space.Real(lower=5e-7, upper=1e-4, log=True),
+                 number_layers = ag.space.Int(lower = 1, upper = 5),
+                 lr=ag.space.Real(lower=1e-5, upper=1e-4, log=True),
                  CNNs = ag.space.Categorical(ag.space.Dict(hidden_fc=ag.space.Int(lower=5, upper=200),
                                                            number_layers = ag.space.Int(lower = 1, upper = 5),
-                                                           kernel_size = ag.space.Int(lower = 3, upper = 11),
+                                                           kernel_size = ag.space.Categorical(3,5,7,9,11),
                                                            skip = ag.space.Categorical(True,False)
                                                         #   pooling = ag.space.Categorical("max", "mean", "first")
                      ),ag.space.Dict()
@@ -57,7 +57,7 @@ def train(args, config):
                 )
         def run_opaque_box(args, reporter):
             print(args)
-            model = NLP_embedder(num_classes = 2,batch_size = 128,args =  args)
+            model = NLP_embedder(num_classes = 2,batch_size = 64,args =  args)
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
             model = model.to(device)
             
@@ -87,7 +87,7 @@ def train(args, config):
         resource={'num_cpus': 4, 'num_gpus': 1},
         searcher='bayesopt',
         search_options=search_options,
-        num_trials=1,
+        num_trials=50,
         reward_attr=REWARD_ATTR_NAME,
         time_attr='epoch',
         grace_period=1,
@@ -98,14 +98,6 @@ def train(args, config):
         # constraint_attr=CONSTRAINT_METRIC_NAME
     )
 
-#     init_config ={'hidden_fc': 100,
-#                    'number_layers': 1,
-#                     'lr': 2e-05,
-#                      'CNNs': {},
-#                       'pooling': 'mean', 
-#                       'freeze_base': False,
-#                        'Attention': {}, 
-#                        'task_id': 1, 'config_id': '1'}
 
     init_config = {'Attention▁0▁num_heads▁choice': 0, 
                    'Attention▁0▁number_layers': 3, 
