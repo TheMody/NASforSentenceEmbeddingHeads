@@ -3,5 +3,5 @@
 config=$1
 prefix=$2
 
-export PATH="/media/compute/homes/saschroeder/anaconda3/envs/test/bin:$PATH"
+export PATH="/media/compute/homes/pkenneweg/anaconda3/envs/test/bin:$PATH"
 python3 ${prefix}/main.py --config ${prefix}/${config}
