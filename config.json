@@ -1,9 +1,8 @@
 [DEFAULT]
-lr = 1e-4
 batch_size = 64
 checkpoint = None
 directory = default
 seed = 42
 epochs = 10
-max_trials = 50
-dataset = sst2small
+num_trials = 50
+dataset = mnlismall

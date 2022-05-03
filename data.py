@@ -65,6 +65,7 @@ def load_data(name="sst2"):
         X2 = [str(e["sentence"].numpy()) for e in data]
         X = list(zip(X,X2))
         y = [int(e["label"]) for e in data]
+       # print(X)
     
         data = tfds.load('glue/qnli', split="validation", shuffle_files=False)
         X_val = [str(e["question"].numpy()) for e in data]

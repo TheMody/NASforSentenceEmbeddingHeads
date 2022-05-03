@@ -30,8 +30,15 @@ def train(args, config):
 
     torch.multiprocessing.set_start_method('spawn', force=True)
 
-    max_epochs = 5
+    max_epochs = int(config["DEFAULT"]["epochs"])
 
+    batch_size = int(config["DEFAULT"]["batch_size"])
+        # dataset specific
+    dataset = config["DEFAULT"]["dataset"]
+    print("dataset:", dataset)
+    num_classes = 2
+    if "mnli" in dataset:
+        num_classes = 3
     
     
     def train_fn():
@@ -57,11 +64,11 @@ def train(args, config):
                 )
         def run_opaque_box(args, reporter):
             print(args)
-            model = NLP_embedder(num_classes = 2,batch_size = 64,args =  args)
+            model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
             model = model.to(device)
             
-            X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name="sst2")
+            X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
             
             model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val, reporter = reporter)
             
@@ -87,7 +94,7 @@ def train(args, config):
         resource={'num_cpus': 4, 'num_gpus': 1},
         searcher='bayesopt',
         search_options=search_options,
-        num_trials=50,
+        num_trials=int(config["DEFAULT"]["num_trials"]),
         reward_attr=REWARD_ATTR_NAME,
         time_attr='epoch',
         grace_period=1,
