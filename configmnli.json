@@ -1,9 +1,9 @@
 [DEFAULT]
-batch_size = 64
+batch_size = 16
 checkpoint = None
-directory = default
+directory = mnli
 seed = 42
-epochs = 10
+epochs = 3
 num_trials = 50
-dataset = sst2
+dataset = mnli
 baseline = True

@@ -16,6 +16,7 @@ from sklearn.model_selection import cross_val_score
 import time
 from data import load_data, SimpleDataset
 from torch.utils.data import DataLoader
+from Crypto.SelfTest import SelfTestError
 # Fixing seed for reproducibility
 SEED = 999
 random.seed(SEED)
@@ -35,10 +36,32 @@ def train(args, config):
     batch_size = int(config["DEFAULT"]["batch_size"])
         # dataset specific
     dataset = config["DEFAULT"]["dataset"]
+    baseline = bool(config["DEFAULT"]["baseline"])
     print("dataset:", dataset)
     num_classes = 2
     if "mnli" in dataset:
         num_classes = 3
+        
+    if True :
+        class dummy():
+            def __init__(self):
+                return
+        args = dummy()
+        args.hidden_fc = 100
+        args.number_layers = 1
+        args.lr = 2e-5
+        args.freeze_base = False
+        args.pooling = "[CLS]"
+        args.CNNs = {}
+        args.Attention = {}
+        
+        model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        model = model.to(device)
+         
+        X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
+         
+        model.fit(X_train, Y_train, epochs=max_epochs)
     
     
     def train_fn():
@@ -54,6 +77,13 @@ def train(args, config):
                      ),ag.space.Dict()
                  
                  ),
+#                 LSTMs = ag.space.Categorical(ag.space.Dict(hidden_fc=ag.space.Int(lower=5, upper=200),
+#                                                            number_layers=ag.space.Int(lower=1, upper=5)
+#                                                 
+#                     ),ag.space.Dict()
+#                   
+#                 ),
+                 
                  pooling = ag.space.Categorical("max", "mean", "[CLS]"),
               #   layer_norm = ag.space.Categorical("layer_norm", "Batch_norm", "none"),
                  freeze_base = ag.space.Categorical(True,False),
@@ -106,20 +136,23 @@ def train(args, config):
     )
 
 
-    init_config = {'Attention▁0▁num_heads▁choice': 0, 
-                   'Attention▁0▁number_layers': 3, 
-                   'Attention▁choice': 1,
-                    'CNNs▁0▁hidden_fc': 102, 
-                    'CNNs▁0▁kernel_size': 7, 
-                    'CNNs▁0▁number_layers': 3, 
-                    'CNNs▁0▁skip▁choice': 0, 
-                    'CNNs▁choice': 1, 
-                    'freeze_base▁choice': 1, 
-                    'hidden_fc': 102,
-                     'lr': 2e-5, 
-                     'number_layers': 1, 
-                     'pooling▁choice': 2}
-    myscheduler.run_with_config(init_config)
+#     init_config = {'Attention▁0▁num_heads▁choice': 0, 
+#                    'Attention▁0▁number_layers': 3, 
+#                    'Attention▁choice': 1,
+# #                     'LSTMs▁0▁hidden_fc' : 100,
+# #                     'LSTMs▁0▁number_layers': 1, 
+# #                     'LSTMs▁choice': 0, 
+#                     'CNNs▁0▁hidden_fc': 102, 
+#                     'CNNs▁0▁kernel_size': 7, 
+#                     'CNNs▁0▁number_layers': 3, 
+#                     'CNNs▁0▁skip▁choice': 0, 
+#                     'CNNs▁choice': 1, 
+#                     'freeze_base▁choice': 1, 
+#                     'hidden_fc': 102,
+#                      'lr': 2e-5, 
+#                      'number_layers': 1, 
+#                      'pooling▁choice': 2}
+#     myscheduler.run_with_config(init_config)
     
   #  Run HPO experiment
     print("run scheduler")

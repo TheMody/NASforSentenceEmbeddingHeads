@@ -150,7 +150,7 @@ class NLP_embedder(nn.Module):
         #attention
         if len(args.Attention.keys()) > 0:
            self.atts = nn.ModuleList([EncoderBlock(input_dim = self.output_length, num_heads = args.Attention["num_heads"], 
-                        dim_feedforward  = self.output_length, dropout=0.2) for i in range(args.number_layers)])
+                        dim_feedforward  = self.output_length, dropout=0.2) for i in range(args.Attention["number_layers"])])
                                        
         
         ffc_input_size = self.output_length
@@ -158,8 +158,13 @@ class NLP_embedder(nn.Module):
         if len(args.CNNs.keys()) > 0:
             self.ccn1 = nn.Conv1d(self.output_length, args.CNNs["hidden_fc"], args.CNNs["kernel_size"], padding = int(args.CNNs["kernel_size"]/2))
             self.ccns = nn.ModuleList([nn.Conv1d(args.CNNs["hidden_fc"], args.CNNs["hidden_fc"], args.CNNs["kernel_size"], padding = int(args.CNNs["kernel_size"]/2))
-                                            for i in range(args.number_layers-1)])
+                                            for i in range(args.CNNs["number_layers"]-1)])
             ffc_input_size = args.CNNs["hidden_fc"]
+            
+    #    LSTM
+#         if len(self.args.LSTMs.keys()) > 0:
+#             self.rnn = nn.LSTM(ffc_input_size,args.LSTMs["hidden_fc"] , args.LSTMs["number_layers"], batch_first = True)
+#             ffc_input_size = args.LSTMs["hidden_fc"]
             
         #fully connected layers
         if args.number_layers >= 2:
@@ -168,6 +173,8 @@ class NLP_embedder(nn.Module):
             self.fcs = nn.ModuleList([nn.Linear(args.hidden_fc, args.hidden_fc) for i in range(args.number_layers-2)])
         else:
             self.fc1 = nn.Linear(ffc_input_size,self.num_classes)
+            
+        
         
         
     def forward(self, x):
@@ -191,6 +198,10 @@ class NLP_embedder(nn.Module):
             if self.args.CNNs["skip"]:
                 x = x_in + x
             x = torch.transpose(x,1,2)
+        
+#         #LSTMs
+#         if len(self.args.LSTMs.keys()) > 0:
+#             x,_ = self.rnn(x)
         
         #pooling
         if self.args.pooling == "[CLS]":
@@ -228,6 +239,7 @@ class NLP_embedder(nn.Module):
                 batch_y = y[i*self.batch_size: ul]
            #     batch_x = glue_convert_examples_to_features(, tokenizer, max_length=128,  task=task_name)
                 batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding)
+            #    print(batch_x["input_ids"].size())
                 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
                 batch_y = batch_y.to(device)
                 batch_x = batch_x.to(device)
@@ -237,19 +249,25 @@ class NLP_embedder(nn.Module):
                 loss.backward()
                 self.optimizer.step()
 
-#                 if i % np.max((1,int((len(x)/self.batch_size)*0.01))) == 0:
+#                 if i % np.max((1,int((len(x)/self.batch_size)*0.001))) == 0:
 #                     print(i, loss.item())
                # print(y_pred, batch_y)
 
                 self.scheduler.step()
-
+#                 batch_x = batch_x.to('cpu')
+#                 batch_y = batch_y.to('cpu')
+#                 y_pred = y_pred.to('cpu')
+#                 del batch_x
+#                 del batch_y
+#                 del y_pred
+#                torch.cuda.empty_cache()
             if X_val != None:
                 with torch.no_grad():
                     accuracy = self.evaluate(X_val, Y_val)
                     print("accuracy after", e, "epochs:", float(accuracy.cpu().numpy()), "time per epoch", time.time()-start)
                     reporter(objective=float(accuracy.cpu().numpy()), epoch=e+1)
                 
-            torch.cuda.empty_cache()
+                
 
         return 
     
