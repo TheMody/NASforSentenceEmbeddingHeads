@@ -91,21 +91,23 @@ def load_data(name="sst2"):
 #             X = list(zip(X,X2))
 #             y = [int(e["label"]) for e in data[:smallsize]]
 #         else:
+
+        maxlength = 300
         X = [str(e["premise"].numpy()) for e in data]
-        X2 = [str(e["hypothesis"].numpy()) for e in data]
+        X2 = [str(e["hypothesis"].numpy())[:min(len(str(e["hypothesis"].numpy())), maxlength)] for e in data] #needed to not overload the vram
         X = list(zip(X,X2))
         y = [int(e["label"]) for e in data]
     
         data = tfds.load('glue/mnli', split="validation_matched", shuffle_files=False)
         X_val = [str(e["premise"].numpy()) for e in data]
-        X2_val = [str(e["hypothesis"].numpy()) for e in data]
+        X2_val = [str(e["hypothesis"].numpy())[:min(len(str(e["hypothesis"].numpy())), maxlength)]  for e in data]
         X_val = list(zip(X_val,X2_val))
         y_val = [int(e["label"]) for e in data]
 
         
         data = tfds.load('glue/mnli', split="test_matched", shuffle_files=False)
         X_test = [str(e["premise"].numpy()) for e in data]
-        X2_test = [str(e["hypothesis"].numpy()) for e in data]
+        X2_test = [str(e["hypothesis"].numpy())[:min(len(str(e["hypothesis"].numpy())), maxlength)]  for e in data]
         X_test = list(zip(X_test,X2_test))
         y_test = [int(e["label"]) for e in data]
         

@@ -42,7 +42,7 @@ def train(args, config):
     if "mnli" in dataset:
         num_classes = 3
         
-    if True :
+    if baseline :
         class dummy():
             def __init__(self):
                 return
@@ -54,14 +54,22 @@ def train(args, config):
         args.pooling = "[CLS]"
         args.CNNs = {}
         args.Attention = {}
-        
         model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
+        print("build model")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model = model.to(device)
-         
+        
+        print("load dataset")
         X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
-         
-        model.fit(X_train, Y_train, epochs=max_epochs)
+        
+#         from torch.utils.tensorboard import SummaryWriter
+#         writer = SummaryWriter('runs')
+#         writer.add_graph(model, model.tokenizer(X_train[0:2], return_tensors="pt", padding=model.padding).to(device))
+#         writer.close()
+        print("fitting baseline model")
+        accuracy = model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val)
+        
+        print("accuracy", accuracy)
     
     
     def train_fn():

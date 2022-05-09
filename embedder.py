@@ -8,6 +8,7 @@ import time
 import numpy as np
 from transformers.utils import logging
 from transformers import glue_convert_examples_to_features
+
 logging.set_verbosity_error()
 #import nvidia_smi
 
@@ -144,6 +145,7 @@ class NLP_embedder(nn.Module):
         self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
         self.softmax = torch.nn.Softmax(dim=1)
         
+        
 
     def construct_head(self,args):
         
@@ -227,9 +229,12 @@ class NLP_embedder(nn.Module):
     
      
     def fit(self, x, y, epochs=1, X_val= None,Y_val= None, reporter = None):
+        
         self.scheduler = CosineWarmupScheduler(optimizer= self.optimizer, 
                                                warmup = math.ceil(len(x)*epochs *0.1 / self.batch_size) ,
                                                 max_iters = math.ceil(len(x)*epochs  / self.batch_size))
+        
+        accuracy = None
         for e in range(epochs):
             start = time.time()
             for i in range(math.ceil(len(x) / self.batch_size)):
@@ -239,13 +244,13 @@ class NLP_embedder(nn.Module):
                 batch_y = y[i*self.batch_size: ul]
            #     batch_x = glue_convert_examples_to_features(, tokenizer, max_length=128,  task=task_name)
                 batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding)
-            #    print(batch_x["input_ids"].size())
+             #   print(batch_x["input_ids"].size())
                 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
                 batch_y = batch_y.to(device)
                 batch_x = batch_x.to(device)
                 self.optimizer.zero_grad()
                 y_pred = self(batch_x)
-                loss = self.criterion(y_pred, batch_y)
+                loss = self.criterion(y_pred, batch_y)          
                 loss.backward()
                 self.optimizer.step()
 
@@ -265,11 +270,12 @@ class NLP_embedder(nn.Module):
                 with torch.no_grad():
                     accuracy = self.evaluate(X_val, Y_val)
                     print("accuracy after", e, "epochs:", float(accuracy.cpu().numpy()), "time per epoch", time.time()-start)
-                    reporter(objective=float(accuracy.cpu().numpy()), epoch=e+1)
+                    if reporter != None:
+                        reporter(objective=float(accuracy.cpu().numpy()), epoch=e+1)
                 
                 
 
-        return 
+        return accuracy
     
     def evaluate(self, X,Y):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
