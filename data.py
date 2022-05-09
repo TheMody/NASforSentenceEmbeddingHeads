@@ -8,7 +8,8 @@ smallsize = 500
 
 task_list = ["cola","colasmall","sst2", "sst2smallunbalanced","sst2small", "mrpcsmall", "mrpc", "qnli", "qnlismall", "mnli", "mnlismall"]#,"qnli"]
 def load_data(name="sst2"):
-
+    
+    additional = ""
     if "small" in name:
         additional = "[:" + str(smallsize) +"]"
 #         X = X[:smallsize]
