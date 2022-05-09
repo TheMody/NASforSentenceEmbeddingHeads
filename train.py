@@ -16,7 +16,6 @@ from sklearn.model_selection import cross_val_score
 import time
 from data import load_data, SimpleDataset
 from torch.utils.data import DataLoader
-from Crypto.SelfTest import SelfTestError
 # Fixing seed for reproducibility
 SEED = 999
 random.seed(SEED)
@@ -24,7 +23,7 @@ np.random.seed(SEED)
 
 ACTIVE_METRIC_NAME = 'accuracy'
 REWARD_ATTR_NAME = 'objective'
-
+datasets = ["cola", "sst2", "mrpc", "mnli" ]
     
 
 def train(args, config):
@@ -36,8 +35,12 @@ def train(args, config):
     batch_size = int(config["DEFAULT"]["batch_size"])
         # dataset specific
     dataset = config["DEFAULT"]["dataset"]
-    baseline = bool(config["DEFAULT"]["baseline"])
+    baseline = config["DEFAULT"]["baseline"] == "True"
+    combined = config["DEFAULT"]["combined"] == "True"
+    if "small" in dataset:
+        small = True
     print("dataset:", dataset)
+    print("trying all datasets at once: ", combined)
     num_classes = 2
     if "mnli" in dataset:
         num_classes = 3
@@ -50,7 +53,7 @@ def train(args, config):
         args.hidden_fc = 100
         args.number_layers = 1
         args.lr = 2e-5
-        args.freeze_base = False
+     #   args.freeze_base = False
         args.pooling = "[CLS]"
         args.CNNs = {}
         args.Attention = {}
@@ -94,22 +97,43 @@ def train(args, config):
                  
                  pooling = ag.space.Categorical("max", "mean", "[CLS]"),
               #   layer_norm = ag.space.Categorical("layer_norm", "Batch_norm", "none"),
-                 freeze_base = ag.space.Categorical(True,False),
+               #  freeze_base = ag.space.Categorical(True,False),
                  Attention = ag.space.Categorical(ag.space.Dict(#embed_dim=ag.space.Categorical(8,16,32,64,128,256,512),
                                                                 num_heads=ag.space.Categorical(1,2,4,8,16),
                                                            number_layers = ag.space.Int(lower = 1, upper = 5)
                      ),ag.space.Dict())
                 )
         def run_opaque_box(args, reporter):
+          #  args.freeze_base = False 
             print(args)
-            model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
-            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            model = model.to(device)
-            
-            X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
-            
-            model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val, reporter = reporter)
-            
+            if combined:
+                cum_accuracy = 0.0
+                for dataset in datasets:
+                    if small: 
+                        dataset = dataset + "small"
+                    num_classes = 2
+                    if "mnli" in dataset:
+                        num_classes = 3
+                    model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
+                    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                    model = model.to(device)
+                    
+                    X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
+                    
+                    acc  = model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val, reporter = None)
+                    cum_accuracy += acc
+                torch.cuda.empty_cache()
+                print("cumulative accuracy", cum_accuracy)
+                reporter(objective=cum_accuracy)
+            else:
+                model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
+                device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                model = model.to(device)
+                
+                X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
+                
+                model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val, reporter = reporter)
+                
             
         return run_opaque_box
 
@@ -127,21 +151,33 @@ def train(args, config):
         'num_init_random': 1,
         'debug_log': True}
 
-    myscheduler = ag.scheduler.HyperbandScheduler(   
-        runboxfn,
-        resource={'num_cpus': 4, 'num_gpus': 1},
-        searcher='bayesopt',
-        search_options=search_options,
-        num_trials=int(config["DEFAULT"]["num_trials"]),
-        reward_attr=REWARD_ATTR_NAME,
-        time_attr='epoch',
-        grace_period=1,
-        reduction_factor=3,
-        max_t=15,
-        brackets=1,
-        checkpoint=config["DEFAULT"]["directory"] + "/checkpoint.ckp"
-        # constraint_attr=CONSTRAINT_METRIC_NAME
-    )
+    if combined:
+        myscheduler = ag.scheduler.FIFOScheduler(   
+            runboxfn,
+            resource={'num_cpus': 4, 'num_gpus': 1},
+            searcher='bayesopt',
+            search_options=search_options,
+            num_trials=int(config["DEFAULT"]["num_trials"]),
+            reward_attr=REWARD_ATTR_NAME,
+            checkpoint=config["DEFAULT"]["directory"] + "/checkpoint.ckp"
+            # constraint_attr=CONSTRAINT_METRIC_NAME
+        )
+    else:
+        myscheduler = ag.scheduler.HyperbandScheduler(   
+            runboxfn,
+            resource={'num_cpus': 4, 'num_gpus': 1},
+            searcher='bayesopt',
+            search_options=search_options,
+            num_trials=int(config["DEFAULT"]["num_trials"]),
+            reward_attr=REWARD_ATTR_NAME,
+            time_attr='epoch',
+            grace_period=1,
+            reduction_factor=3,
+            max_t=15,
+            brackets=1,
+            checkpoint=config["DEFAULT"]["directory"] + "/checkpoint.ckp"
+            # constraint_attr=CONSTRAINT_METRIC_NAME
+        )
 
 
 #     init_config = {'Attention▁0▁num_heads▁choice': 0, 

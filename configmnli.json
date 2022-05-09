@@ -7,3 +7,4 @@ epochs = 3
 num_trials = 50
 dataset = mnli
 baseline = False
+combined = False

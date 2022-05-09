@@ -7,3 +7,4 @@ epochs = 5
 num_trials = 50
 dataset = mrpc
 baseline = True
+combined = False

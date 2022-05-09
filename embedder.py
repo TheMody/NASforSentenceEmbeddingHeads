@@ -137,9 +137,9 @@ class NLP_embedder(nn.Module):
 #             self.batch_size = 1  # has to be 1 since gpt-2 does not have padding tokens
 #             output_length = 768
             
-        if args.freeze_base:
-            for param in self.model.parameters():
-                param.requires_grad = False
+#         if args.freeze_base:
+#             for param in self.model.parameters():
+#                 param.requires_grad = False
         self.construct_head(args)
         self.criterion = torch.nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
@@ -275,7 +275,7 @@ class NLP_embedder(nn.Module):
                 
                 
 
-        return accuracy
+        return float(accuracy.cpu().numpy())
     
     def evaluate(self, X,Y):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

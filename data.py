@@ -9,10 +9,15 @@ smallsize = 500
 task_list = ["cola","colasmall","sst2", "sst2smallunbalanced","sst2small", "mrpcsmall", "mrpc", "qnli", "qnlismall", "mnli", "mnlismall"]#,"qnli"]
 def load_data(name="sst2"):
 
+    if "small" in name:
+        additional = "[:" + str(smallsize) +"]"
+#         X = X[:smallsize]
+#         y = y[:smallsize]
+    
     if name not in task_list:
         print("dataset not suported")
     if "sst2" in name:
-        data = tfds.load('glue/sst2', split="train", shuffle_files=False)
+        data = tfds.load('glue/sst2', split="train" + additional, shuffle_files=False)
         
         X = [str(e["sentence"].numpy()) for e in data]
         y = [int(e["label"]) for e in data]
@@ -25,7 +30,7 @@ def load_data(name="sst2"):
         X_test = [str(e["sentence"].numpy()) for e in data]
         y_test = [int(e["label"]) for e in data]
     elif "cola" in name:
-        data = tfds.load('glue/cola', split="train", shuffle_files=False)
+        data = tfds.load('glue/cola', split="train"+ additional, shuffle_files=False)
         
         X = [str(e["sentence"].numpy()) for e in data]
         y = [int(e["label"]) for e in data]
@@ -38,7 +43,7 @@ def load_data(name="sst2"):
         X, X_test, y, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         
     elif "mrpc" in name:
-        data = tfds.load('glue/mrpc', split="train", shuffle_files=True)
+        data = tfds.load('glue/mrpc', split="train"+ additional, shuffle_files=True)
         
         X = [str(e["sentence1"].numpy()) for e in data]
         X2 = [str(e["sentence2"].numpy()) for e in data]
@@ -59,7 +64,7 @@ def load_data(name="sst2"):
         y_test = [int(e["label"]) for e in data] #test labels are garbage
         
     elif "qnli" in name:
-        data = tfds.load('glue/qnli', split="train", shuffle_files=False)
+        data = tfds.load('glue/qnli', split="train"+ additional, shuffle_files=False)
         
         X = [str(e["question"].numpy()) for e in data]
         X2 = [str(e["sentence"].numpy()) for e in data]
@@ -83,7 +88,7 @@ def load_data(name="sst2"):
 
         
     elif "mnli" in name:
-        data = tfds.load('glue/mnli', split="train", shuffle_files=False)
+        data = tfds.load('glue/mnli', split="train"+ additional, shuffle_files=False)
         
 #         if "small" in name:
 #             X = [str(e["premise"].numpy()) for e in data[:smallsize]]
@@ -137,9 +142,7 @@ def load_data(name="sst2"):
         y = list(y[new_ids])
         X = list(X[new_ids])
         
-    if "small" in name:
-        X = X[:smallsize]
-        y = y[:smallsize]
+
 #     print("validation: ",X_val[0:2])
 #     print(y_val[0:2])
 #     print("train", X[0:2])

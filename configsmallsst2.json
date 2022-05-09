@@ -7,3 +7,4 @@ epochs = 10
 num_trials = 50
 dataset = sst2small
 baseline = True
+combined = False
