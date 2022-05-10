@@ -106,11 +106,12 @@ def train(args, config):
         def run_opaque_box(args, reporter):
           #  args.freeze_base = False 
             print(args)
+            print(combined)
             if combined:
                 cum_accuracy = 0.0
-                for dataset in datasets:
+                for datasetnew in datasets:
                     if small: 
-                        dataset = dataset + "small"
+                        datasetnew = datasetnew + "small"
                     num_classes = 2
                     if "mnli" in dataset:
                         num_classes = 3
@@ -118,7 +119,7 @@ def train(args, config):
                     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
                     model = model.to(device)
                     
-                    X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
+                    X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=datasetnew)
                     
                     acc  = model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val, reporter = None)
                     cum_accuracy += acc
@@ -126,12 +127,16 @@ def train(args, config):
                 print("cumulative accuracy", cum_accuracy)
                 reporter(objective=cum_accuracy)
             else:
+                num_classes = 2
+                if "mnli" in dataset:
+                    num_classes = 3
+                print("loading model")
                 model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
                 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
                 model = model.to(device)
-                
+                print("loading dataset")
                 X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
-                
+                print("training model")
                 model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val, reporter = reporter)
                 
             
