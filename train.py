@@ -73,7 +73,7 @@ def train(args, config):
         accuracy = model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val)
         
         print("accuracy", accuracy)
-    
+    torch.cuda.empty_cache()
     
     def train_fn():
         @ag.args(

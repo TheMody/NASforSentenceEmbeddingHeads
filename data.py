@@ -15,8 +15,8 @@ def load_data(name="sst2"):
 #         X = X[:smallsize]
 #         y = y[:smallsize]
     
-    if name not in task_list:
-        print("dataset not suported")
+#     if name not in task_list:
+#         print("dataset not suported")
     if "sst2" in name:
         data = tfds.load('glue/sst2', split="train" + additional, shuffle_files=False)
         
@@ -86,27 +86,6 @@ def load_data(name="sst2"):
         X_test = list(zip(X_test,X2_test))
         y_test = [int(e["label"]) for e in data]
         
-    elif "rte" in name:
-        data = tfds.load('glue/rte', split="train"+ additional, shuffle_files=False)
-        
-        X = [str(e["sentence1"].numpy()) for e in data]
-        X2 = [str(e["sentence2"].numpy()) for e in data]
-        X = list(zip(X,X2))
-        y = [int(e["label"]) for e in data]
-       # print(X)
-    
-        data = tfds.load('glue/rte', split="validation", shuffle_files=False)
-        X_val = [str(e["question"].numpy()) for e in data]
-        X2_val = [str(e["sentence"].numpy()) for e in data]
-        X_val = list(zip(X_val,X2_val))
-        y_val = [int(e["label"]) for e in data]
-
-        
-        data = tfds.load('glue/rte', split="test", shuffle_files=False)
-        X_test = [str(e["question"].numpy()) for e in data]
-        X2_test = [str(e["sentence"].numpy()) for e in data]
-        X_test = list(zip(X_test,X2_test))
-        y_test = [int(e["label"]) for e in data]
         
     elif "rte" in name:
         data = tfds.load('glue/rte', split="train"+ additional, shuffle_files=False)
@@ -118,15 +97,15 @@ def load_data(name="sst2"):
        # print(X)
     
         data = tfds.load('glue/rte', split="validation", shuffle_files=False)
-        X_val = [str(e["question"].numpy()) for e in data]
-        X2_val = [str(e["sentence"].numpy()) for e in data]
+        X_val = [str(e["sentence1"].numpy()) for e in data]
+        X2_val = [str(e["sentence2"].numpy()) for e in data]
         X_val = list(zip(X_val,X2_val))
         y_val = [int(e["label"]) for e in data]
 
         
         data = tfds.load('glue/rte', split="test", shuffle_files=False)
-        X_test = [str(e["question"].numpy()) for e in data]
-        X2_test = [str(e["sentence"].numpy()) for e in data]
+        X_test = [str(e["sentence1"].numpy()) for e in data]
+        X2_test = [str(e["sentence2"].numpy()) for e in data]
         X_test = list(zip(X_test,X2_test))
         y_test = [int(e["label"]) for e in data]
         
@@ -139,16 +118,16 @@ def load_data(name="sst2"):
         y = [int(e["label"]) for e in data]
        # print(X)
     
-        data = tfds.load('glue/qqp', split="validation", shuffle_files=False)
-        X_val = [str(e["question"].numpy()) for e in data]
-        X2_val = [str(e["sentence"].numpy()) for e in data]
+        data = tfds.load('glue/qqp', split="validation[:10000]", shuffle_files=False)
+        X_val = [str(e["question1"].numpy()) for e in data]
+        X2_val = [str(e["question2"].numpy()) for e in data]
         X_val = list(zip(X_val,X2_val))
         y_val = [int(e["label"]) for e in data]
 
         
-        data = tfds.load('glue/qqp', split="test", shuffle_files=False)
-        X_test = [str(e["question"].numpy()) for e in data]
-        X2_test = [str(e["sentence"].numpy()) for e in data]
+        data = tfds.load('glue/qqp', split="test[:1000]", shuffle_files=False)
+        X_test = [str(e["question1"].numpy()) for e in data]
+        X2_test = [str(e["question2"].numpy()) for e in data]
         X_test = list(zip(X_test,X2_test))
         y_test = [int(e["label"]) for e in data]
         
