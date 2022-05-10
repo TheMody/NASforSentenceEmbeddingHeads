@@ -243,7 +243,7 @@ class NLP_embedder(nn.Module):
                 batch_x = x[i*self.batch_size: ul]
                 batch_y = y[i*self.batch_size: ul]
            #     batch_x = glue_convert_examples_to_features(, tokenizer, max_length=128,  task=task_name)
-                batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding)
+                batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding, max_length = 196, truncation = True)
              #   print(batch_x["input_ids"].size())
                 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
                 batch_y = batch_y.to(device)
@@ -291,7 +291,7 @@ class NLP_embedder(nn.Module):
         for i in range(math.ceil(len(x) / self.batch_size)):
             ul = min((i+1) * self.batch_size, len(x))
             batch_x = x[i*self.batch_size: ul]
-            batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding)
+            batch_x = self.tokenizer(batch_x, return_tensors="pt", padding=self.padding, max_length = 196, truncation = True)
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
             batch_x = batch_x.to(device)
             batch_x = self(batch_x)
