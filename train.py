@@ -23,7 +23,7 @@ np.random.seed(SEED)
 
 ACTIVE_METRIC_NAME = 'accuracy'
 REWARD_ATTR_NAME = 'objective'
-datasets = ["cola", "sst2", "mrpc", "mnli" ]
+datasets = ["cola", "sst2", "mrpc",  "qqp", "rte" ]#"mnli",
     
 
 def train(args, config):
