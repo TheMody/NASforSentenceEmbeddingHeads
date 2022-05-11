@@ -51,7 +51,6 @@ def train(args, config):
         args.hidden_fc = 100
         args.number_layers = 1
         args.lr = 2e-5
-     #   args.freeze_base = False
         args.pooling = "[CLS]"
         args.CNNs = {}
         args.Attention = {}
@@ -63,10 +62,6 @@ def train(args, config):
         print("load dataset")
         X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
         
-#         from torch.utils.tensorboard import SummaryWriter
-#         writer = SummaryWriter('runs')
-#         writer.add_graph(model, model.tokenizer(X_train[0:2], return_tensors="pt", padding=model.padding).to(device))
-#         writer.close()
         print("fitting baseline model")
         accuracy = model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val)
         
@@ -111,7 +106,7 @@ def train(args, config):
                     if "small" in dataset:
                         datasetnew = datasetnew + "small"
                     num_classes = 2
-                    if "mnli" in dataset:
+                    if "mnli" in datasetnew:
                         num_classes = 3
                     model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
                     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
