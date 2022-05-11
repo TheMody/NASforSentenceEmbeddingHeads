@@ -37,8 +37,6 @@ def train(args, config):
     dataset = config["DEFAULT"]["dataset"]
     baseline = config["DEFAULT"]["baseline"] == "True"
     combined = config["DEFAULT"]["combined"] == "True"
-    if "small" in dataset:
-        small = True
     print("dataset:", dataset)
     print("trying all datasets at once: ", combined)
     num_classes = 2
@@ -110,7 +108,7 @@ def train(args, config):
             if combined:
                 cum_accuracy = 0.0
                 for datasetnew in datasets:
-                    if small: 
+                    if "small" in dataset:
                         datasetnew = datasetnew + "small"
                     num_classes = 2
                     if "mnli" in dataset:
