@@ -1,10 +1,10 @@
 [DEFAULT]
-batch_size = 4
+batch_size = 16
 checkpoint = None
 directory = mnli
 seed = 42
 epochs = 3
-num_trials = 30
+num_trials = 50
 dataset = mnli
 baseline = False
 combined = False
