@@ -1,0 +1,10 @@
+[DEFAULT]
+batch_size = 64
+checkpoint = None
+directory = mrpc
+seed = 42
+epochs = 5
+num_trials = 50
+dataset = mrpc
+baseline = True
+combined = False

@@ -1,0 +1,330 @@
+dataset: qqp
+trying all datasets at once:  False
+build model
+load dataset
+fitting baseline model
+accuracy after 0 epochs: 0.8729999661445618 time per epoch 2885.7717492580414
+accuracy after 1 epochs: 0.8944000005722046 time per epoch 2887.383751630783
+accuracy after 2 epochs: 0.8986999988555908 time per epoch 2887.0546815395355
+accuracy 0.8986999988555908
+run scheduler
+(task:1)	{'hidden_fc': 16, 'number_layers': 1, 'lr': 5.702478338662181e-05, 'CNNs': {'hidden_fc': 28, 'number_layers': 1, 'kernel_size': 9, 'skip': False}, 'pooling': '[CLS]', 'Attention': {}, 'task_id': 1, 'config_id': '1'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 2926.688698530197
+accuracy after 1 epochs: 0.6313999891281128 time per epoch 2933.198422908783
+accuracy after 2 epochs: 0.6748999953269958 time per epoch 2931.5156466960907
+(task:0)	{'hidden_fc': 102, 'number_layers': 3, 'lr': 3.16228e-05, 'CNNs': {'hidden_fc': 102, 'number_layers': 3, 'kernel_size': 3, 'skip': True}, 'pooling': 'max', 'Attention': {'num_heads': 1, 'number_layers': 3}, 'task_id': 0, 'config_id': '0'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3357.331691980362
+accuracy after 1 epochs: 0.6313999891281128 time per epoch 3362.350353717804
+accuracy after 2 epochs: 0.6313999891281128 time per epoch 3364.9759657382965
+(task:2)	{'hidden_fc': 159, 'number_layers': 2, 'lr': 6.6045008678082e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {}, 'task_id': 2, 'config_id': '2'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 2922.6152849197388
+accuracy after 1 epochs: 0.6313999891281128 time per epoch 2918.119062900543
+accuracy after 2 epochs: 0.6313999891281128 time per epoch 2918.728635787964
+(task:3)	{'hidden_fc': 22, 'number_layers': 5, 'lr': 8.96750193711567e-05, 'CNNs': {'hidden_fc': 181, 'number_layers': 1, 'kernel_size': 7, 'skip': True}, 'pooling': 'mean', 'Attention': {'num_heads': 2, 'number_layers': 5}, 'task_id': 3, 'config_id': '3'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3635.6763439178467
+accuracy after 1 epochs: 0.6313999891281128 time per epoch 3633.5912687778473
+accuracy after 2 epochs: 0.6313999891281128 time per epoch 3637.9609248638153
+(task:4)	{'hidden_fc': 5, 'number_layers': 1, 'lr': 1e-05, 'CNNs': {'hidden_fc': 5, 'number_layers': 5, 'kernel_size': 7, 'skip': False}, 'pooling': 'max', 'Attention': {'num_heads': 2, 'number_layers': 5}, 'task_id': 4, 'config_id': '4'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8639999628067017 time per epoch 3635.8294744491577
+accuracy after 1 epochs: 0.8847000002861023 time per epoch 3622.377254009247
+accuracy after 2 epochs: 0.8933999538421631 time per epoch 3621.3208911418915
+(task:5)	{'hidden_fc': 85, 'number_layers': 4, 'lr': 2.9186809481636064e-05, 'CNNs': {'hidden_fc': 168, 'number_layers': 1, 'kernel_size': 5, 'skip': False}, 'pooling': 'max', 'Attention': {'num_heads': 4, 'number_layers': 4}, 'task_id': 5, 'config_id': '5'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3471.1676387786865
+accuracy after 1 epochs: 0.6313999891281128 time per epoch 3471.0097737312317
+accuracy after 2 epochs: 0.6313999891281128 time per epoch 3481.1833012104034
+(task:6)	{'hidden_fc': 87, 'number_layers': 1, 'lr': 3.0126906059830935e-05, 'CNNs': {'hidden_fc': 159, 'number_layers': 2, 'kernel_size': 7, 'skip': True}, 'pooling': 'max', 'Attention': {}, 'task_id': 6, 'config_id': '6'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8733999729156494 time per epoch 2963.615488767624
+accuracy after 1 epochs: 0.8921999931335449 time per epoch 2962.504417657852
+accuracy after 2 epochs: 0.899899959564209 time per epoch 2961.5434758663177
+(task:8)	{'hidden_fc': 41, 'number_layers': 5, 'lr': 4.53584812751739e-05, 'CNNs': {}, 'pooling': '[CLS]', 'Attention': {'num_heads': 4, 'number_layers': 4}, 'task_id': 8, 'config_id': '8'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3453.005195617676
+(task:7)	{'hidden_fc': 167, 'number_layers': 1, 'lr': 1.2600127928658546e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 2, 'number_layers': 5}, 'task_id': 7, 'config_id': '7'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8799999952316284 time per epoch 3565.5660543441772
+accuracy after 1 epochs: 0.8919999599456787 time per epoch 3566.748836517334
+accuracy after 2 epochs: 0.8934999704360962 time per epoch 3565.277136325836
+(task:9)	{'hidden_fc': 142, 'number_layers': 1, 'lr': 6.15583733360559e-05, 'CNNs': {'hidden_fc': 17, 'number_layers': 4, 'kernel_size': 7, 'skip': True}, 'pooling': 'max', 'Attention': {'num_heads': 2, 'number_layers': 5}, 'task_id': 9, 'config_id': '9'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3650.179778814316
+(task:10)	{'hidden_fc': 181, 'number_layers': 4, 'lr': 1.9605114006948006e-05, 'CNNs': {'hidden_fc': 195, 'number_layers': 2, 'kernel_size': 7, 'skip': True}, 'pooling': '[CLS]', 'Attention': {}, 'task_id': 10, 'config_id': '10'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 2990.2361290454865
+(task:11)	{'hidden_fc': 97, 'number_layers': 5, 'lr': 1.6324619771269718e-05, 'CNNs': {}, 'pooling': 'mean', 'Attention': {'num_heads': 4, 'number_layers': 1}, 'task_id': 11, 'config_id': '11'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8700999617576599 time per epoch 3040.4155809879303
+accuracy after 1 epochs: 0.8910999894142151 time per epoch 3039.5972146987915
+accuracy after 2 epochs: 0.894599974155426 time per epoch 3043.7422502040863
+(task:12)	{'hidden_fc': 28, 'number_layers': 1, 'lr': 1.3457325123420382e-05, 'CNNs': {'hidden_fc': 13, 'number_layers': 4, 'kernel_size': 7, 'skip': False}, 'pooling': 'max', 'Attention': {'num_heads': 2, 'number_layers': 5}, 'task_id': 12, 'config_id': '12'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8764999508857727 time per epoch 3611.5399260520935
+accuracy after 1 epochs: 0.8944000005722046 time per epoch 3609.397359609604
+accuracy after 2 epochs: 0.8984999656677246 time per epoch 3614.0720932483673
+(task:14)	{'hidden_fc': 87, 'number_layers': 1, 'lr': 3.0859851194152005e-05, 'CNNs': {'hidden_fc': 132, 'number_layers': 2, 'kernel_size': 7, 'skip': False}, 'pooling': 'mean', 'Attention': {'num_heads': 2, 'number_layers': 5}, 'task_id': 14, 'config_id': '14'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3616.427269220352
+(task:13)	{'hidden_fc': 89, 'number_layers': 4, 'lr': 1.238177695750084e-05, 'CNNs': {}, 'pooling': 'mean', 'Attention': {'num_heads': 4, 'number_layers': 1}, 'task_id': 13, 'config_id': '13'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8773999810218811 time per epoch 3110.778821706772
+accuracy after 1 epochs: 0.8934999704360962 time per epoch 3115.669712305069
+accuracy after 2 epochs: 0.8940999507904053 time per epoch 3105.7801122665405
+(task:15)	{'hidden_fc': 66, 'number_layers': 5, 'lr': 1.8498637702490096e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 16, 'number_layers': 4}, 'task_id': 15, 'config_id': '15'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8761999607086182 time per epoch 3459.1483640670776
+accuracy after 1 epochs: 0.8938999772071838 time per epoch 3474.0633449554443
+accuracy after 2 epochs: 0.8987999558448792 time per epoch 3471.169046640396
+(task:16)	{'hidden_fc': 113, 'number_layers': 3, 'lr': 1e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {}, 'task_id': 16, 'config_id': '16'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8792999982833862 time per epoch 2913.086824655533
+accuracy after 1 epochs: 0.8908999562263489 time per epoch 2910.0801815986633
+accuracy after 2 epochs: 0.8921999931335449 time per epoch 2910.932698726654
+(task:17)	{'hidden_fc': 139, 'number_layers': 3, 'lr': 1.8648043247960638e-05, 'CNNs': {'hidden_fc': 170, 'number_layers': 4, 'kernel_size': 7, 'skip': False}, 'pooling': 'max', 'Attention': {}, 'task_id': 17, 'config_id': '17'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8535999655723572 time per epoch 3021.5737779140472
+(task:18)	{'hidden_fc': 5, 'number_layers': 4, 'lr': 2.3007153180084707e-05, 'CNNs': {'hidden_fc': 200, 'number_layers': 3, 'kernel_size': 5, 'skip': True}, 'pooling': 'max', 'Attention': {}, 'task_id': 18, 'config_id': '18'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 2997.726945877075
+(task:20)	{'hidden_fc': 148, 'number_layers': 2, 'lr': 5.781228345844525e-05, 'CNNs': {'hidden_fc': 108, 'number_layers': 1, 'kernel_size': 7, 'skip': False}, 'pooling': 'mean', 'Attention': {'num_heads': 4, 'number_layers': 1}, 'task_id': 20, 'config_id': '20'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3077.9336524009705
+(task:21)	{'hidden_fc': 112, 'number_layers': 3, 'lr': 2.7807294422530416e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 4, 'number_layers': 4}, 'task_id': 21, 'config_id': '21'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8669999837875366 time per epoch 3496.520480632782
+(task:19)	{'hidden_fc': 109, 'number_layers': 4, 'lr': 1.6339717973024445e-05, 'CNNs': {'hidden_fc': 162, 'number_layers': 2, 'kernel_size': 7, 'skip': True}, 'pooling': 'max', 'Attention': {}, 'task_id': 19, 'config_id': '19'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.880299985408783 time per epoch 2981.0416646003723
+accuracy after 1 epochs: 0.8955999612808228 time per epoch 2977.6128435134888
+accuracy after 2 epochs: 0.8994999527931213 time per epoch 2971.5986590385437
+(task:23)	{'hidden_fc': 200, 'number_layers': 5, 'lr': 1e-05, 'CNNs': {'hidden_fc': 121, 'number_layers': 4, 'kernel_size': 7, 'skip': True}, 'pooling': 'max', 'Attention': {'num_heads': 4, 'number_layers': 1}, 'task_id': 23, 'config_id': '23'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3142.3604307174683
+(task:22)	{'hidden_fc': 100, 'number_layers': 5, 'lr': 1.4591868604855956e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {}, 'task_id': 22, 'config_id': '22'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8780999779701233 time per epoch 2922.5660741329193
+accuracy after 1 epochs: 0.8901000022888184 time per epoch 2922.17688536644
+accuracy after 2 epochs: 0.8944000005722046 time per epoch 2915.815830230713
+(task:25)	{'hidden_fc': 5, 'number_layers': 5, 'lr': 1.646638491561229e-05, 'CNNs': {'hidden_fc': 68, 'number_layers': 2, 'kernel_size': 7, 'skip': True}, 'pooling': 'max', 'Attention': {}, 'task_id': 25, 'config_id': '25'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8643999695777893 time per epoch 2984.9017736911774
+(task:24)	{'hidden_fc': 109, 'number_layers': 2, 'lr': 1e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 2, 'number_layers': 4}, 'task_id': 24, 'config_id': '24'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8811999559402466 time per epoch 3438.414464712143
+accuracy after 1 epochs: 0.8953999876976013 time per epoch 3440.61057639122
+accuracy after 2 epochs: 0.8976999521255493 time per epoch 3433.057495355606
+(task:27)	{'hidden_fc': 106, 'number_layers': 5, 'lr': 1.1328988648120785e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 16, 'number_layers': 5}, 'task_id': 27, 'config_id': '27'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3607.6097769737244
+(task:28)	{'hidden_fc': 99, 'number_layers': 4, 'lr': 5.513774013814851e-05, 'CNNs': {}, 'pooling': 'mean', 'Attention': {'num_heads': 2, 'number_layers': 2}, 'task_id': 28, 'config_id': '28'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3188.2173347473145
+(task:26)	{'hidden_fc': 107, 'number_layers': 3, 'lr': 1.0681698045232555e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 1, 'number_layers': 5}, 'task_id': 26, 'config_id': '26'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8782999515533447 time per epoch 3570.9452311992645
+accuracy after 1 epochs: 0.8930000066757202 time per epoch 3575.8174107074738
+accuracy after 2 epochs: 0.8952999711036682 time per epoch 3568.8564579486847
+(task:30)	{'hidden_fc': 21, 'number_layers': 1, 'lr': 5.0514280769383665e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {}, 'task_id': 30, 'config_id': '30'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8452000021934509 time per epoch 2905.087743282318
+(task:31)	{'hidden_fc': 100, 'number_layers': 3, 'lr': 4.760491917141125e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {}, 'task_id': 31, 'config_id': '31'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 2904.6591835021973
+(task:29)	{'hidden_fc': 66, 'number_layers': 1, 'lr': 1e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {}, 'task_id': 29, 'config_id': '29'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8859999775886536 time per epoch 2922.320629119873
+accuracy after 1 epochs: 0.8971999883651733 time per epoch 2922.4272813796997
+accuracy after 2 epochs: 0.8995999693870544 time per epoch 2913.56582903862
+(task:32)	{'hidden_fc': 72, 'number_layers': 3, 'lr': 1.9733693533537114e-05, 'CNNs': {'hidden_fc': 72, 'number_layers': 4, 'kernel_size': 7, 'skip': False}, 'pooling': 'max', 'Attention': {'num_heads': 1, 'number_layers': 3}, 'task_id': 32, 'config_id': '32'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8634999990463257 time per epoch 3381.8014256954193
+(task:33)	{'hidden_fc': 5, 'number_layers': 5, 'lr': 1.0865703123560802e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 4, 'number_layers': 5}, 'task_id': 33, 'config_id': '33'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3590.8639872074127
+(task:35)	{'hidden_fc': 5, 'number_layers': 3, 'lr': 1e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 1, 'number_layers': 1}, 'task_id': 35, 'config_id': '35'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8633999824523926 time per epoch 3039.588943719864
+(task:34)	{'hidden_fc': 5, 'number_layers': 1, 'lr': 2.390138343653298e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 4, 'number_layers': 3}, 'task_id': 34, 'config_id': '34'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.873699963092804 time per epoch 3302.888678789139
+accuracy after 1 epochs: 0.8960999846458435 time per epoch 3294.9644932746887
+accuracy after 2 epochs: 0.8999999761581421 time per epoch 3290.3848102092743
+(task:36)	{'hidden_fc': 200, 'number_layers': 2, 'lr': 1.7553400238199584e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 4, 'number_layers': 1}, 'task_id': 36, 'config_id': '36'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8823999762535095 time per epoch 3120.6990053653717
+accuracy after 1 epochs: 0.8914999961853027 time per epoch 3106.2863981723785
+accuracy after 2 epochs: 0.8971999883651733 time per epoch 3095.663429737091
+(task:38)	{'hidden_fc': 198, 'number_layers': 3, 'lr': 1.2226107448832515e-05, 'CNNs': {}, 'pooling': '[CLS]', 'Attention': {}, 'task_id': 38, 'config_id': '38'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 2911.6043696403503
+(task:37)	{'hidden_fc': 105, 'number_layers': 1, 'lr': 1.5344228849791914e-05, 'CNNs': {}, 'pooling': '[CLS]', 'Attention': {'num_heads': 2, 'number_layers': 3}, 'task_id': 37, 'config_id': '37'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8772000074386597 time per epoch 3293.3214042186737
+accuracy after 1 epochs: 0.8937999606132507 time per epoch 3297.3498017787933
+accuracy after 2 epochs: 0.8953999876976013 time per epoch 3299.5148406028748
+(task:39)	{'hidden_fc': 194, 'number_layers': 1, 'lr': 2.4915524719362596e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 2, 'number_layers': 3}, 'task_id': 39, 'config_id': '39'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8738999962806702 time per epoch 3299.056891441345
+accuracy after 1 epochs: 0.8934999704360962 time per epoch 3300.272943019867
+accuracy after 2 epochs: 0.8980000019073486 time per epoch 3296.8714940547943
+(task:40)	{'hidden_fc': 77, 'number_layers': 1, 'lr': 1e-05, 'CNNs': {}, 'pooling': 'mean', 'Attention': {'num_heads': 4, 'number_layers': 4}, 'task_id': 40, 'config_id': '40'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8840999603271484 time per epoch 3439.5379247665405
+accuracy after 1 epochs: 0.8940999507904053 time per epoch 3441.4289813041687
+accuracy after 2 epochs: 0.8980000019073486 time per epoch 3439.094784259796
+(task:41)	{'hidden_fc': 160, 'number_layers': 2, 'lr': 1.1789374584786732e-05, 'CNNs': {}, 'pooling': 'mean', 'Attention': {}, 'task_id': 41, 'config_id': '41'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8806999921798706 time per epoch 2903.583341360092
+accuracy after 1 epochs: 0.8948999643325806 time per epoch 2900.862594604492
+accuracy after 2 epochs: 0.8991999626159668 time per epoch 2903.6793670654297
+(task:43)	{'hidden_fc': 95, 'number_layers': 5, 'lr': 1.6864852465532727e-05, 'CNNs': {}, 'pooling': 'mean', 'Attention': {}, 'task_id': 43, 'config_id': '43'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 2921.85298204422
+(task:42)	{'hidden_fc': 51, 'number_layers': 2, 'lr': 1e-05, 'CNNs': {}, 'pooling': 'mean', 'Attention': {'num_heads': 2, 'number_layers': 3}, 'task_id': 42, 'config_id': '42'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.8809999823570251 time per epoch 3295.731556892395
+accuracy after 1 epochs: 0.8946999907493591 time per epoch 3305.8671629428864
+accuracy after 2 epochs: 0.8981999754905701 time per epoch 3305.368756055832
+(task:45)	{'hidden_fc': 195, 'number_layers': 3, 'lr': 2.56792209002214e-05, 'CNNs': {'hidden_fc': 104, 'number_layers': 5, 'kernel_size': 7, 'skip': False}, 'pooling': 'max', 'Attention': {'num_heads': 16, 'number_layers': 2}, 'task_id': 45, 'config_id': '45'}
+False
+loading model
+loading dataset
+training model
+accuracy after 0 epochs: 0.6313999891281128 time per epoch 3297.496500968933

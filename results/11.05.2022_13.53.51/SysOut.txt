@@ -1,0 +1,123 @@
+dataset: sst2
+trying all datasets at once:  True
+run scheduler
+(task:1)	{'hidden_fc': 16, 'number_layers': 1, 'lr': 5.702478338662181e-05, 'CNNs': {'hidden_fc': 28, 'number_layers': 1, 'kernel_size': 9, 'skip': False}, 'pooling': '[CLS]', 'Attention': {}, 'task_id': 1, 'config_id': '1'}
+True
+accuracy after 0 epochs: 0.6912751793861389 time per epoch 53.37530517578125
+accuracy after 1 epochs: 0.7325024008750916 time per epoch 53.74812293052673
+accuracy after 2 epochs: 0.7746884226799011 time per epoch 50.406429290771484
+accuracy after 0 epochs: 0.5091742873191833 time per epoch 727.9612290859222
+accuracy after 1 epochs: 0.5091742873191833 time per epoch 758.6521575450897
+accuracy after 2 epochs: 0.5091742873191833 time per epoch 748.1124420166016
+accuracy after 0 epochs: 0.6838235259056091 time per epoch 109.73326110839844
+accuracy after 1 epochs: 0.6838235259056091 time per epoch 110.33856129646301
+accuracy after 2 epochs: 0.6838235259056091 time per epoch 109.49193072319031
+accuracy after 0 epochs: 0.35445746779441833 time per epoch 10021.129785299301
+accuracy after 1 epochs: 0.35445746779441833 time per epoch 10043.65455365181
+accuracy after 2 epochs: 0.35445746779441833 time per epoch 9631.216100692749
+cumulative accuracy 2.322143703699112
+(task:0)	{'hidden_fc': 102, 'number_layers': 3, 'lr': 3.16228e-05, 'CNNs': {'hidden_fc': 102, 'number_layers': 3, 'kernel_size': 3, 'skip': True}, 'pooling': 'max', 'Attention': {'num_heads': 1, 'number_layers': 3}, 'task_id': 0, 'config_id': '0'}
+True
+accuracy after 0 epochs: 0.7085331082344055 time per epoch 60.776899576187134
+accuracy after 1 epochs: 0.7775647044181824 time per epoch 65.87381958961487
+accuracy after 2 epochs: 0.7813998460769653 time per epoch 57.85264801979065
+accuracy after 0 epochs: 0.4908256530761719 time per epoch 838.4021513462067
+accuracy after 1 epochs: 0.4908256530761719 time per epoch 845.3575215339661
+accuracy after 2 epochs: 0.4908256530761719 time per epoch 840.6423716545105
+accuracy after 0 epochs: 0.8039215803146362 time per epoch 125.44494390487671
+accuracy after 1 epochs: 0.8088235855102539 time per epoch 126.39432978630066
+accuracy after 2 epochs: 0.8357843160629272 time per epoch 126.28479671478271
+accuracy after 0 epochs: 0.72980135679245 time per epoch 11245.951439619064
+accuracy after 1 epochs: 0.7743250131607056 time per epoch 11124.21317601204
+accuracy after 2 epochs: 0.7928680777549744 time per epoch 11171.376438617706
+cumulative accuracy 2.900877892971039
+(task:2)	{'hidden_fc': 25, 'number_layers': 5, 'lr': 6.36875825567739e-05, 'CNNs': {'hidden_fc': 195, 'number_layers': 5, 'kernel_size': 9, 'skip': True}, 'pooling': '[CLS]', 'Attention': {}, 'task_id': 2, 'config_id': '2'}
+True
+accuracy after 0 epochs: 0.6912751793861389 time per epoch 72.01319479942322
+accuracy after 1 epochs: 0.6912751793861389 time per epoch 71.80877423286438
+accuracy after 2 epochs: 0.6912751793861389 time per epoch 71.35874056816101
+accuracy after 0 epochs: 0.4908256530761719 time per epoch 790.6481573581696
+accuracy after 1 epochs: 0.4908256530761719 time per epoch 794.1295864582062
+accuracy after 2 epochs: 0.4908256530761719 time per epoch 794.2903714179993
+accuracy after 0 epochs: 0.31617647409439087 time per epoch 113.01509070396423
+accuracy after 1 epochs: 0.31617647409439087 time per epoch 112.76139402389526
+accuracy after 2 epochs: 0.31617647409439087 time per epoch 112.04802703857422
+accuracy after 0 epochs: 0.35445746779441833 time per epoch 9809.033445835114
+accuracy after 1 epochs: 0.35445746779441833 time per epoch 10449.11907505989
+accuracy after 2 epochs: 0.35445746779441833 time per epoch 10477.275498628616
+cumulative accuracy 1.85273477435112
+(task:3)	{'hidden_fc': 103, 'number_layers': 3, 'lr': 4.000443785180571e-05, 'CNNs': {'hidden_fc': 101, 'number_layers': 4, 'kernel_size': 3, 'skip': True}, 'pooling': 'mean', 'Attention': {'num_heads': 1, 'number_layers': 3}, 'task_id': 3, 'config_id': '3'}
+True
+accuracy after 0 epochs: 0.30872485041618347 time per epoch 80.38180088996887
+accuracy after 1 epochs: 0.30872485041618347 time per epoch 78.96367049217224
+accuracy after 2 epochs: 0.30872485041618347 time per epoch 78.67886281013489
+accuracy after 0 epochs: 0.4908256530761719 time per epoch 860.8187265396118
+accuracy after 1 epochs: 0.4908256530761719 time per epoch 861.0157825946808
+accuracy after 2 epochs: 0.4908256530761719 time per epoch 860.1822543144226
+accuracy after 0 epochs: 0.31617647409439087 time per epoch 131.81287503242493
+accuracy after 1 epochs: 0.31617647409439087 time per epoch 131.00094938278198
+accuracy after 2 epochs: 0.31617647409439087 time per epoch 129.62865257263184
+accuracy after 0 epochs: 0.35445746779441833 time per epoch 11731.165167093277
+accuracy after 1 epochs: 0.35445746779441833 time per epoch 11374.119886159897
+accuracy after 2 epochs: 0.35445746779441833 time per epoch 11667.968027830124
+cumulative accuracy 1.4701844453811646
+(task:4)	{'hidden_fc': 48, 'number_layers': 5, 'lr': 4.220284967608341e-05, 'CNNs': {'hidden_fc': 49, 'number_layers': 4, 'kernel_size': 7, 'skip': False}, 'pooling': '[CLS]', 'Attention': {'num_heads': 16, 'number_layers': 5}, 'task_id': 4, 'config_id': '4'}
+True
+accuracy after 0 epochs: 0.6912751793861389 time per epoch 84.23417949676514
+accuracy after 1 epochs: 0.6912751793861389 time per epoch 85.47666811943054
+accuracy after 2 epochs: 0.6912751793861389 time per epoch 84.85029149055481
+accuracy after 0 epochs: 0.4908256530761719 time per epoch 934.240225315094
+accuracy after 1 epochs: 0.4908256530761719 time per epoch 937.7078516483307
+accuracy after 2 epochs: 0.4908256530761719 time per epoch 937.480870962143
+accuracy after 0 epochs: 0.31617647409439087 time per epoch 142.0494785308838
+accuracy after 1 epochs: 0.31617647409439087 time per epoch 143.4927110671997
+accuracy after 2 epochs: 0.31617647409439087 time per epoch 143.1141414642334
+accuracy after 0 epochs: 0.35445746779441833 time per epoch 12197.274120807648
+accuracy after 1 epochs: 0.35445746779441833 time per epoch 12500.148462295532
+accuracy after 2 epochs: 0.35445746779441833 time per epoch 12212.495997428894
+cumulative accuracy 1.85273477435112
+(task:5)	{'hidden_fc': 70, 'number_layers': 5, 'lr': 4.021281388880857e-05, 'CNNs': {}, 'pooling': '[CLS]', 'Attention': {'num_heads': 8, 'number_layers': 4}, 'task_id': 5, 'config_id': '5'}
+True
+accuracy after 0 epochs: 0.6912751793861389 time per epoch 79.52044248580933
+accuracy after 1 epochs: 0.6912751793861389 time per epoch 78.74870157241821
+accuracy after 2 epochs: 0.6912751793861389 time per epoch 79.74562191963196
+accuracy after 0 epochs: 0.5091742873191833 time per epoch 873.5532221794128
+accuracy after 1 epochs: 0.5091742873191833 time per epoch 873.1592853069305
+accuracy after 2 epochs: 0.7385320663452148 time per epoch 875.3620760440826
+accuracy after 0 epochs: 0.7034313678741455 time per epoch 134.2181589603424
+accuracy after 1 epochs: 0.6838235259056091 time per epoch 134.1833577156067
+accuracy after 2 epochs: 0.6838235259056091 time per epoch 134.06113290786743
+accuracy after 0 epochs: 0.35445746779441833 time per epoch 11485.658573389053
+accuracy after 1 epochs: 0.35445746779441833 time per epoch 11632.901402235031
+accuracy after 2 epochs: 0.35445746779441833 time per epoch 12303.834729909897
+cumulative accuracy 2.4680882394313812
+(task:6)	{'hidden_fc': 109, 'number_layers': 3, 'lr': 3.525692955155315e-05, 'CNNs': {'hidden_fc': 96, 'number_layers': 3, 'kernel_size': 3, 'skip': True}, 'pooling': 'max', 'Attention': {'num_heads': 1, 'number_layers': 3}, 'task_id': 6, 'config_id': '6'}
+True
+accuracy after 0 epochs: 0.7190796136856079 time per epoch 75.55326700210571
+accuracy after 1 epochs: 0.7612655758857727 time per epoch 76.07305073738098
+accuracy after 2 epochs: 0.7593480348587036 time per epoch 73.98576998710632
+accuracy after 0 epochs: 0.4908256530761719 time per epoch 842.5897533893585
+accuracy after 1 epochs: 0.4908256530761719 time per epoch 846.0003678798676
+accuracy after 2 epochs: 0.4908256530761719 time per epoch 843.6677703857422
+accuracy after 0 epochs: 0.31617647409439087 time per epoch 110.36226606369019
+accuracy after 1 epochs: 0.31617647409439087 time per epoch 51.150147914886475
+accuracy after 2 epochs: 0.31617647409439087 time per epoch 52.13773488998413
+accuracy after 0 epochs: 0.6597045660018921 time per epoch 11774.5831823349
+accuracy after 1 epochs: 0.7599592208862305 time per epoch 11769.15360879898
+accuracy after 2 epochs: 0.7778909802436829 time per epoch 11374.339658260345
+cumulative accuracy 2.344241142272949
+(task:7)	{'hidden_fc': 118, 'number_layers': 1, 'lr': 8.122075389534399e-05, 'CNNs': {}, 'pooling': 'max', 'Attention': {'num_heads': 4, 'number_layers': 2}, 'task_id': 7, 'config_id': '7'}
+True
+accuracy after 0 epochs: 0.6912751793861389 time per epoch 73.38604664802551
+accuracy after 1 epochs: 0.6912751793861389 time per epoch 73.24692416191101
+accuracy after 2 epochs: 0.6912751793861389 time per epoch 72.7053894996643
+accuracy after 0 epochs: 0.5091742873191833 time per epoch 810.0372822284698
+accuracy after 1 epochs: 0.6731650829315186 time per epoch 811.2359073162079
+accuracy after 2 epochs: 0.7809632420539856 time per epoch 807.8466987609863
+accuracy after 0 epochs: 0.6838235259056091 time per epoch 124.11727952957153
+accuracy after 1 epochs: 0.7303921580314636 time per epoch 124.40392780303955
+accuracy after 2 epochs: 0.8063725829124451 time per epoch 125.05782175064087
+accuracy after 0 epochs: 0.35445746779441833 time per epoch 10795.59342622757
+accuracy after 1 epochs: 0.3181864619255066 time per epoch 11079.089880228043
+accuracy after 2 epochs: 0.32735610008239746 time per epoch 10750.716480970383
+cumulative accuracy 2.605967104434967

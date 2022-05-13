@@ -1,0 +1,10 @@
+[DEFAULT]
+batch_size = 64
+checkpoint = None
+directory = sst2small
+seed = 42
+epochs = 10
+num_trials = 50
+dataset = sst2small
+baseline = False
+combined = False
