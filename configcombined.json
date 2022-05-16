@@ -1,9 +1,9 @@
 [DEFAULT]
-batch_size = 8
+batch_size = 16
 checkpoint = None
-directory = default
+directory = results/combined
 seed = 42
-epochs = 3
+epochs = 5
 num_trials = 50
 dataset = sst2
 baseline = False

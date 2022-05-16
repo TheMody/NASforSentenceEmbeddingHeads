@@ -23,7 +23,8 @@ np.random.seed(SEED)
 
 ACTIVE_METRIC_NAME = 'accuracy'
 REWARD_ATTR_NAME = 'objective'
-datasets = ["cola", "sst2", "mrpc", "mnli"]#"qqp", "rte" 
+datasets = [ "mnli","cola", "sst2", "mrpc","qqp", "rte"]#"qqp", "rte" 
+eval_ds = [ "rtesmall", "qqpsmall","qqp", "rte"]
     
 
 def train(args, config):
@@ -33,7 +34,7 @@ def train(args, config):
     max_epochs = int(config["DEFAULT"]["epochs"])
 
     batch_size = int(config["DEFAULT"]["batch_size"])
-        # dataset specific
+
     dataset = config["DEFAULT"]["dataset"]
     baseline = config["DEFAULT"]["baseline"] == "True"
     combined = config["DEFAULT"]["combined"] == "True"
@@ -48,24 +49,30 @@ def train(args, config):
             def __init__(self):
                 return
         args = dummy()
-        args.hidden_fc = 100
+        args.hidden_fc = 39
         args.number_layers = 1
         args.lr = 2e-5
-        args.pooling = "[CLS]"
-        args.CNNs = {}
-        args.Attention = {}
-        model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
-        print("build model")
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        model = model.to(device)
+        args.pooling = "mean"
+        args.CNNs = {'hidden_fc': 40, 'number_layers': 1, 'kernel_size': 11, 'skip': True}
+        args.Attention = {'num_heads': 1, 'number_layers': 4}
         
-        print("load dataset")
-        X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=dataset)
-        
-        print("fitting baseline model")
-        accuracy = model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val)
-        
-        print("accuracy", accuracy)
+        for evaldataset in eval_ds:
+            num_classes = 2
+            if "mnli" in evaldataset:
+                num_classes = 3
+            model = NLP_embedder(num_classes = num_classes,batch_size = batch_size,args =  args)
+            print("build model")
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            model = model.to(device)
+            
+            print("load dataset")
+            X_train, X_val, X_test, Y_train, Y_val, Y_test = load_data(name=evaldataset)
+            
+            print("fitting baseline model")
+            accuracy = model.fit(X_train, Y_train, epochs=max_epochs, X_val = X_val, Y_val = Y_val)
+            
+            print("accuracy", accuracy)
+            torch.cuda.empty_cache()
     torch.cuda.empty_cache()
     
     def train_fn():

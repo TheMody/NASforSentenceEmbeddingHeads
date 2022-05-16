@@ -14,6 +14,8 @@ def load_data(name="sst2"):
         split = split + "[:" + str(smallsize) +"]"
 #         X = X[:smallsize]
 #         y = y[:smallsize]
+#     if "mnli" in name:
+#         split = "train[:10000]"
     
 #     if name not in task_list:
 #         print("dataset not suported")
